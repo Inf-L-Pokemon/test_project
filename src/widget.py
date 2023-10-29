@@ -1,4 +1,4 @@
-from masks import hidden_card_number, hidden_account_number
+from src.masks import hidden_account_number, hidden_card_number
 
 
 def type_and_hidden_number(type_number: str) -> str:
@@ -11,11 +11,11 @@ def type_and_hidden_number(type_number: str) -> str:
     for i, w in enumerate(type_number):
         if w in "0123456789":
             if len(type_number[i:]) == 16:
-                return type_number[:i] + hidden_card_number(type_number[i:])
+                return f"{type_number[:i]}{hidden_card_number(type_number[i:])}"
             elif len(type_number[i:]) == 20:
-                return type_number[:i] + hidden_account_number(type_number[i:])
+                return f"{type_number[:i]}{hidden_account_number(type_number[i:])}"
             else:
-                quit("Неправильно введен номер счета/карты")
+                return "Неправильно введен номер счета/карты"
 
 
 def return_date(str_datetime: str) -> str:
