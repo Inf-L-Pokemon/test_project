@@ -8,14 +8,15 @@ def type_and_hidden_number(type_number: str) -> str:
     :param type_number: Строка с информацией "тип карты/счета и номер карты/счета"
     :return: Тип карты/счета с замаскированным номером карты/счета
     """
-    for i, w in enumerate(type_number):
-        if w in "0123456789":
-            if len(type_number[i:]) == 16:
-                return f"{type_number[:i]}{hidden_card_number(type_number[i:])}"
-            elif len(type_number[i:]) == 20:
-                return f"{type_number[:i]}{hidden_account_number(type_number[i:])}"
-            else:
-                return "Неправильно введен номер счета/карты"
+    list_type_number = type_number.rsplit(maxsplit=1)
+    if len(list_type_number[1]) == 16:
+        list_type_number[1] = hidden_card_number(list_type_number[1])
+        return " ".join(list_type_number)
+    elif len(list_type_number[1]) == 20:
+        list_type_number[1] = hidden_account_number(list_type_number[1])
+        return " ".join(list_type_number)
+    else:
+        return "Неправильно введен номер счета/карты"
 
 
 def return_date(str_datetime: str) -> str:
