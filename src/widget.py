@@ -9,10 +9,10 @@ def type_and_hidden_number(type_number: str) -> str:
     :return: Тип карты/счета с замаскированным номером карты/счета
     """
     list_type_number = type_number.rsplit(maxsplit=1)
-    if len(list_type_number[1]) == 16:
+    if len(list_type_number[1]) == 16 and list_type_number[1].isdigit() and list_type_number[0] != "Счет":
         list_type_number[1] = hidden_card_number(list_type_number[1])
         return " ".join(list_type_number)
-    elif len(list_type_number[1]) == 20:
+    elif len(list_type_number[1]) == 20 and list_type_number[1].isdigit() and list_type_number[0] == "Счет":
         list_type_number[1] = hidden_account_number(list_type_number[1])
         return " ".join(list_type_number)
     else:
