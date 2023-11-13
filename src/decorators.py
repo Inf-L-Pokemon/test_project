@@ -4,6 +4,14 @@ from typing import Any, Callable, Optional
 
 
 def log(filename: str | None = None) -> Optional[Callable]:
+    """
+    Декоратор ведет лог вызова функции и ее результата в файл или в консоль.
+    Если вызов функции закончился ошибкой, то записывается сообщение об ошибке и входные параметры функции.
+    Если задан параметр filename - записывает лог в файл с именем filename.
+    Если параметр filename не задан - выводит лог в консоль.
+    :param filename: Имя файла для логов
+    :return: Лог вызова функции
+    """
     def wrapper(func: Callable) -> Optional[Callable]:
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
