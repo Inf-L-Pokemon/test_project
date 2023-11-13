@@ -3,7 +3,7 @@ from functools import wraps
 from typing import Callable, Optional
 
 
-def log(filename: str | None = None) -> Optional[Callable, None]:
+def log(filename: str | None = None) -> Optional[Callable]:
     def wrapper(func):
         @wraps(func)
         def inner(*args, **kwargs):
@@ -12,7 +12,7 @@ def log(filename: str | None = None) -> Optional[Callable, None]:
                 now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 if filename:
                     with open(filename, "a", encoding="utf8") as log_file:
-                        log_file.write(f"{now} {func.__name__} ok")
+                        log_file.write(f"{now} {func.__name__} ok\n")
                 else:
                     print(f"{now} {func.__name__} ok")
                 return result
@@ -20,7 +20,7 @@ def log(filename: str | None = None) -> Optional[Callable, None]:
                 now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
                 if filename:
                     with open(filename, "a", encoding="utf8") as log_file:
-                        log_file.write(f"{now} {func.__name__} error: {err}. Inputs: {args}, {kwargs}")
+                        log_file.write(f"{now} {func.__name__} error: {err}. Inputs: {args}, {kwargs}\n")
                 else:
                     print(f"{now} {func.__name__} error: {err}. Inputs: {args}, {kwargs}")
         return inner
