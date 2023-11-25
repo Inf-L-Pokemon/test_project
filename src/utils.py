@@ -1,5 +1,8 @@
+import csv
 import json
 from typing import Any
+
+import pandas as pd
 
 from src.logger import logger_set
 
@@ -17,10 +20,56 @@ def return_transaction_from_json(filepath: str) -> list | Any:
     try:
         with open(filepath, "r", encoding="utf-8") as jf:
             list_transaction = json.load(jf)
-            logger_utils.info(f"Найдено {len(list_transaction)} транзакций.")
-            return list_transaction
+        logger_utils.info(f"Найдено {len(list_transaction)} транзакций.")
+        return list_transaction
     except (FileNotFoundError, json.decoder.JSONDecodeError):
         logger_utils.error(f"Файл по адресу {filepath} не найден или содержит текст не в формате json")
+        return []
+
+
+def return_transaction_from_csv(filepath: str) -> list | Any:
+    """
+    Принимает на вход путь до CSV-файла и возвращает список словарей с данными о финансовых транзакциях.
+    Если файл пустой или не найден, функция возвращает пустой список.
+    :param filepath: Путь до CSV-файла.
+    :return: Список транзакций (опционально - пустой список).
+    """
+    logger_utils.info("Составляем список словарей с транзакциями...")
+    try:
+        with open(filepath, "r", encoding="utf-8") as cf:
+            list_transaction = list(csv.DictReader(cf, delimiter=";"))
+        for transaction in list_transaction:
+            transaction["operationAmount"] = {
+                "amount": transaction.pop("amount"),
+                "currency": {"name": transaction.pop("currency_name"), "code": transaction.pop("currency_code")},
+            }
+        logger_utils.info(f"Найдено {len(list_transaction)} транзакций.")
+        return list_transaction
+    except FileNotFoundError:
+        logger_utils.error(f"Файл по адресу {filepath} не найден или содержит текст не в формате csv")
+        return []
+
+
+def return_transaction_from_xls(filepath: str) -> list | Any:
+    """
+    Принимает на вход путь до XLS-файла и возвращает список словарей с данными о финансовых транзакциях.
+    Если файл пустой или не найден, функция возвращает пустой список.
+    :param filepath: Путь до XLS-файла.
+    :return: Список транзакций (опционально - пустой список).
+    """
+    logger_utils.info("Составляем список словарей с транзакциями...")
+    try:
+        df_transaction = pd.read_excel(filepath)
+        list_transaction = df_transaction.to_dict("records")
+        for transaction in list_transaction:
+            transaction["operationAmount"] = {
+                "amount": transaction.pop("amount"),
+                "currency": {"name": transaction.pop("currency_name"), "code": transaction.pop("currency_code")},
+            }
+        logger_utils.info(f"Найдено {len(list_transaction)} транзакций.")
+        return list_transaction
+    except FileNotFoundError:
+        logger_utils.error(f"Файл по адресу {filepath} не найден или содержит текст не в формате xls")
         return []
 
 
