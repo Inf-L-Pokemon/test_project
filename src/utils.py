@@ -39,10 +39,12 @@ def return_transaction_from_csv(filepath: str) -> list | Any:
         with open(filepath, "r", encoding="utf-8") as cf:
             list_transaction = list(csv.DictReader(cf, delimiter=";"))
         for transaction in list_transaction:
-            transaction["operationAmount"] = {
-                "amount": transaction.pop("amount"),
-                "currency": {"name": transaction.pop("currency_name"), "code": transaction.pop("currency_code")},
-            }
+            if transaction["id"] != "":
+                transaction["id"] = int(transaction["id"])
+                transaction["operationAmount"] = {
+                    "amount": transaction.pop("amount"),
+                    "currency": {"name": transaction.pop("currency_name"), "code": transaction.pop("currency_code")},
+                }
         logger_utils.info(f"Найдено {len(list_transaction)} транзакций.")
         return list_transaction
     except FileNotFoundError:

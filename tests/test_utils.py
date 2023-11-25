@@ -1,14 +1,37 @@
 import pytest
 
-from src.utils import return_transaction_from_json, transaction_in_rubles
+from src.utils import (
+    return_transaction_from_csv,
+    return_transaction_from_json,
+    return_transaction_from_xls,
+    transaction_in_rubles,
+)
 
 
 @pytest.mark.parametrize(
     "filepath, expected_result",
-    [(r"data\operations.json", [441945886, 41428829, 939719570]), (r"data\nonexistent.json", [])],
+    [(r"data/operations.json", [441945886, 41428829, 939719570]), (r"data/nonexistent.json", [])],
 )
 def test_return_transaction_from_json(filepath, expected_result):
     list_transaction = return_transaction_from_json(filepath)
+    assert [transaction["id"] for transaction in list_transaction[0:3]] == expected_result
+
+
+@pytest.mark.parametrize(
+    "filepath, expected_result",
+    [(r"data/transactions.csv", [650703, 3598919, 593027]), (r"data/nonexistent.csv", [])],
+)
+def test_return_transaction_from_csv(filepath, expected_result):
+    list_transaction = return_transaction_from_csv(filepath)
+    assert [transaction["id"] for transaction in list_transaction[0:3]] == expected_result
+
+
+@pytest.mark.parametrize(
+    "filepath, expected_result",
+    [(r"data/transactions_excel.xlsx", [650703, 3598919, 593027]), (r"data/nonexistent.xlsx", [])],
+)
+def test_return_transaction_from_xls(filepath, expected_result):
+    list_transaction = return_transaction_from_xls(filepath)
     assert [transaction["id"] for transaction in list_transaction[0:3]] == expected_result
 
 
